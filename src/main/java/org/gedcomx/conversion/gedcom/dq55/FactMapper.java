@@ -308,8 +308,11 @@ public class FactMapper {
     if (dqOrdinance.getPlace() != null) {
       ordinance.place(new PlaceReference().original(dqOrdinance.getPlace()));
     }
-    if (dqOrdinance.getStatus() != null) {
+    if (dqOrdinance.getDate() != null || dqOrdinance.getStatus() != null) {
       OrdinanceStatus ordinanceStatus = mapOrdinanceStatus(dqOrdinance.getStatus());
+      // all the ordinances I have are complete - forcing this
+      ordinanceStatus = OrdinanceStatus.Completed;
+
       if (ordinanceStatus != null) {
         ordinance.addQualifier(new Qualifier(ordinanceStatus.toQNameURI()));
       }

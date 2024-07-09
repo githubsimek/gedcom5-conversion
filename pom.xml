@@ -11,12 +11,12 @@
   <url>https://github.com/FamilySearch/gedcom5-conversion</url>
 
   <properties>
-    <gedcom.version>1.11.0</gedcom.version>
-    <gedcomx.version>2.122.0</gedcomx.version>
-    <testng.version>7.7.0</testng.version>
+    <gedcom.version>1.15.0-SNAPSHOT</gedcom.version>
+    <gedcomx.version>3.20.0</gedcomx.version>
+    <testng.version>6.5.2</testng.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <slf-api.version>1.6.4</slf-api.version>
-    <logback.version>1.2.0</logback.version>
+    <logback.version>1.0.13</logback.version>
   </properties>
 
   <scm>
@@ -45,6 +45,24 @@
       <groupId>org.gedcomx</groupId>
       <artifactId>gedcomx-fileformat</artifactId>
       <version>${gedcomx.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.jaxrs</groupId>
+          <artifactId>jackson-jaxrs-json-provider</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.familysearch.gedcom</groupId>
@@ -64,7 +82,7 @@
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-smile</artifactId>
-      <version>2.17.0</version>
+      <version>2.6.2</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -79,6 +97,11 @@
       <artifactId>testng</artifactId>
       <version>${testng.version}</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>1.48</version>
     </dependency>
   </dependencies>
 

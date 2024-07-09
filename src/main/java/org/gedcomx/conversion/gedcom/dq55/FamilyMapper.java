@@ -124,9 +124,16 @@ public class FamilyMapper {
       ConversionContext.addReference(ordinanceContext);
 
       if (coupleRelationship != null) {
-        Fact ordinance = FactMapper.toOrdinance(ldsOrdinance);
-        if(ordinance != null) {
-          coupleRelationship.addFact(ordinance);
+        Fact ordinanceFact = FactMapper.toOrdinance(ldsOrdinance);
+        if(ordinanceFact != null) {
+//        This ordinance is stilla Fact - and it needs to be Ordinance
+//        coupleRelationship.addFact(ordinance);
+          Ordinance ordinance = new Ordinance();
+          ordinance.setCompleteDate(ordinanceFact.getDate());
+          ordinance.setTempleCode(ordinanceFact.getQualifiers().get(0).getValue());
+          ordinance.setStatus(ordinanceFact.getQualifiers().get(1).getName());
+          ordinance.setType(ordinanceFact.getType());
+          coupleRelationship.addExtensionElement(ordinance);
         }
       }
       else {

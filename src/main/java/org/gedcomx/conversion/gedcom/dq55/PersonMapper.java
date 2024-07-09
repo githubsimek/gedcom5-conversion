@@ -231,11 +231,28 @@ public class PersonMapper {
     }
 
     int index = 0;
-    for(LdsOrdinance ordinance : ordinances) {
-      Marker ordinanceContext = ConversionContext.getDetachedMarker(ordinance.getTag() + '.' + (++index));
+    for(LdsOrdinance ord : ordinances) {
+      Marker ordinanceContext = ConversionContext.getDetachedMarker(ord.getTag() + '.' + (++index));
       ConversionContext.addReference(ordinanceContext);
       try {
-        gedxPerson.addFact(FactMapper.toOrdinance(ordinance));
+        Fact ordFact = FactMapper.toOrdinance(ord);
+
+        Ordinance ordinance = new Ordinance();
+        ordinance.setCompleteDate(ordFact.getDate());
+        ordinance.setType(ordFact.getType());
+
+        if (ordFact.getQualifiers() == null) {
+          System.out.println("gedxPerson:" + gedxPerson.getId().toString());
+        }
+        else if (ordFact.getQualifiers().size() == 1) {
+          ordinance.setStatus(ordFact.getQualifiers().get(0).getName());
+        }
+        else if (ordFact.getQualifiers().size() == 2) {
+          ordinance.setTempleCode(ordFact.getQualifiers().get(0).getValue());
+          ordinance.setStatus(ordFact.getQualifiers().get(1).getName());
+        }
+        gedxPerson.addExtensionElement(ordinance);
+//        gedxPerson.addFact(FactMapper.toOrdinance(ordinance));
       } finally {
         ConversionContext.removeReference(ordinanceContext);
       }
@@ -274,6 +291,9 @@ public class PersonMapper {
     gedxName.setNameForms(new ArrayList<NameForm>());
     NameForm primaryForm = new NameForm();
     primaryForm.setFullText(getNameValue(dqName));
+    if (primaryForm.getLang() == null) {
+      primaryForm.setLang("ja");
+    }
     List<NamePart> parts = getNameParts(dqName);
     if (parts != null) {
       primaryForm.setParts(parts);
@@ -282,6 +302,7 @@ public class PersonMapper {
 
     if (dqName.getFone() != null) {
       NameForm foneNameForm = new NameForm();
+      foneNameForm.setLang("ja-Hrkt");
       foneNameForm.setFullText(dqName.getFone());
       gedxName.getNameForms().add(foneNameForm);
     }
@@ -289,6 +310,7 @@ public class PersonMapper {
     if (dqName.getRomn() != null) {
       NameForm romanNameForm = new NameForm();
       romanNameForm.setFullText(dqName.getRomn());
+      romanNameForm.setLang("ja-Latn");
       gedxName.getNameForms().add(romanNameForm);
     }
 
