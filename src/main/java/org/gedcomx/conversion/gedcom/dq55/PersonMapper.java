@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.folg.gedcom.model.EventFact;
 import org.folg.gedcom.model.GedcomTag;
@@ -395,6 +396,11 @@ public class PersonMapper {
     }
 
     int indexOfSlash;
+//    For Japanese Missing Ordinance, there are only given names, so value is of the form: 'XXXX //'
+//    If I delete the //, standard Names for Japanese assumes the first character is the last name. - simeki
+    if (value.contains("//") && value.matches("[^a-zA-Z]+")) {
+      return value.trim();
+    }
     while ((indexOfSlash = value.indexOf('/')) >= 0){
       // If both characters around the slash are not a space, replace the slash with a space, otherwise just remove it.
       boolean replaceWithSpace = false;
