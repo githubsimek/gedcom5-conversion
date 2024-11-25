@@ -281,6 +281,7 @@ public class PersonMapper {
 
   private List<Name> toNameList(org.folg.gedcom.model.Name dqName, GedcomxConversionResult result) throws IOException {
     List<Name> nameList = new ArrayList<Name>();
+    Boolean femaleWithSuffix = false;
 
     if (dqName == null) {
       return nameList;
@@ -298,6 +299,11 @@ public class PersonMapper {
     List<NamePart> parts = getNameParts(dqName);
     if (parts != null) {
       primaryForm.setParts(parts);
+      for (NamePart part : parts) {
+        if (part.getKnownType().equals(NamePartType.Suffix)
+          && part.getValue().equals("夫人")) femaleWithSuffix = true;
+      }
+
     }
     gedxName.getNameForms().add(primaryForm);
 
@@ -305,6 +311,15 @@ public class PersonMapper {
       NameForm foneNameForm = new NameForm();
       foneNameForm.setLang("ja-Hrkt");
       foneNameForm.setFullText(dqName.getFone());
+      // Add suffix part if suffix "夫人" exists for primaryForm
+      if (femaleWithSuffix) {
+        List<NamePart> foneParts = newNamePartInstances("フジン", NamePartType.Suffix);
+        NamePart givenName = new NamePart();
+        givenName.setKnownType(NamePartType.Given);
+        givenName.setValue(dqName.getFone().replace("//", "").trim());
+        foneParts.add(givenName);
+        foneNameForm.setParts(foneParts);
+      }
       gedxName.getNameForms().add(foneNameForm);
     }
 
@@ -312,6 +327,15 @@ public class PersonMapper {
       NameForm romanNameForm = new NameForm();
       romanNameForm.setFullText(dqName.getRomn());
       romanNameForm.setLang("ja-Latn");
+      // Add suffix part if suffix "夫人" exists for primaryForm
+      if (femaleWithSuffix) {
+        List<NamePart> romanParts = newNamePartInstances("Fujin", NamePartType.Suffix);
+        NamePart givenName = new NamePart();
+        givenName.setKnownType(NamePartType.Given);
+        givenName.setValue(dqName.getRomn().replace("//", "").trim());
+        romanParts.add(givenName);
+        romanNameForm.setParts(romanParts);
+      }
       gedxName.getNameForms().add(romanNameForm);
     }
 
