@@ -243,7 +243,8 @@ public class PersonMapper {
         ordinance.setType(ordFact.getType());
 
         if (ordFact.getQualifiers() == null) {
-          System.out.println("gedxPerson:" + gedxPerson.getId().toString());
+          System.out.println("Missing date for gedxPerson: " + gedxPerson.getId().toString() +
+                  " ordinance: " + ordFact.getType().toString());
         }
         else if (ordFact.getQualifiers().size() == 1) {
           ordinance.setStatus(ordFact.getQualifiers().get(0).getName());
