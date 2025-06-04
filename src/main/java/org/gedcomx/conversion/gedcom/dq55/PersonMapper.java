@@ -298,6 +298,7 @@ public class PersonMapper {
       primaryForm.setLang("ja");
     }
     List<NamePart> parts = getNameParts(dqName);
+    // Check if there is a female Mrs suffix
     if (parts != null) {
       primaryForm.setParts(parts);
       for (NamePart part : parts) {
@@ -309,34 +310,68 @@ public class PersonMapper {
     gedxName.getNameForms().add(primaryForm);
 
     if (dqName.getFone() != null) {
+      List<NamePart> foneParts = new ArrayList<>();
       NameForm foneNameForm = new NameForm();
       foneNameForm.setLang("ja-Hrkt");
       foneNameForm.setFullText(dqName.getFone());
+
       // Add suffix part if suffix "夫人" exists for primaryForm
       if (femaleWithSuffix) {
-        List<NamePart> foneParts = newNamePartInstances("フジン", NamePartType.Suffix);
-        NamePart givenName = new NamePart();
-        givenName.setKnownType(NamePartType.Given);
+        foneParts = newNamePartInstances("フジン", NamePartType.Suffix);
+      }
+      NamePart givenName = new NamePart();
+      givenName.setKnownType(NamePartType.Given);
+
+      // This checks if there is only a given name. Example: 1 NAME 伝右エ門 //
+      if (dqName.getFone().contains("//")) {
         givenName.setValue(dqName.getFone().replace("//", "").trim());
         foneParts.add(givenName);
-        foneNameForm.setParts(foneParts);
       }
+      // This checks if there is a last name also. Example: 2 ROMN /Yoshimura/ Takichi
+      else if (dqName.getFone().contains("/"))  {
+        givenName.setValue(dqName.getFone().split("/")[2]);
+        foneParts.add(givenName);
+        NamePart lastName = new NamePart();
+        lastName.setKnownType(NamePartType.Surname);
+        lastName.setValue(dqName.getFone().split("/")[1]);
+        foneParts.add(lastName);
+        foneNameForm.setFullText(dqName.getFone().replace("/", ""));
+      }
+      foneNameForm.setParts(foneParts);
+
       gedxName.getNameForms().add(foneNameForm);
     }
 
     if (dqName.getRomn() != null) {
+      List<NamePart> romanParts = new ArrayList<>();
       NameForm romanNameForm = new NameForm();
-      romanNameForm.setFullText(dqName.getRomn());
       romanNameForm.setLang("ja-Latn");
+      romanNameForm.setFullText(dqName.getRomn());
+
       // Add suffix part if suffix "夫人" exists for primaryForm
       if (femaleWithSuffix) {
-        List<NamePart> romanParts = newNamePartInstances("Fujin", NamePartType.Suffix);
-        NamePart givenName = new NamePart();
-        givenName.setKnownType(NamePartType.Given);
+        romanParts = newNamePartInstances("Fujin", NamePartType.Suffix);
+      }
+      NamePart givenName = new NamePart();
+      givenName.setKnownType(NamePartType.Given);
+
+      // This checks if there is only a given name. Example: 1 NAME 伝右エ門 //
+      if (dqName.getRomn().contains("//")) {
         givenName.setValue(dqName.getRomn().replace("//", "").trim());
         romanParts.add(givenName);
-        romanNameForm.setParts(romanParts);
       }
+      // This checks if there is a last name also. Example: 2 ROMN /Yoshimura/ Takichi
+      else if (dqName.getRomn().contains("/")) {
+        givenName.setValue(dqName.getRomn().split("/")[2]);
+        romanParts.add(givenName);
+        NamePart lastName = new NamePart();
+        lastName.setKnownType(NamePartType.Surname);
+        lastName.setValue(dqName.getRomn().split("/")[1]);
+        romanParts.add(lastName);
+        romanNameForm.setFullText(dqName.getRomn().replace("/", ""));
+      }
+      romanNameForm.setParts(romanParts);
+
       gedxName.getNameForms().add(romanNameForm);
     }
 
