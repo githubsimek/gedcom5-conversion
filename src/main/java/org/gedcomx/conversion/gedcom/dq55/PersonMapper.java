@@ -328,13 +328,18 @@ public class PersonMapper {
         foneParts.add(givenName);
       }
       // This checks if there is a last name also. Example: 2 ROMN /Yoshimura/ Takichi
-      else if (dqName.getFone().contains("/"))  {
-        givenName.setValue(dqName.getFone().split("/")[2]);
+      else if (dqName.getFone().contains("/")) {
+        if (dqName.getFone().split("/").length == 3) {
+          givenName.setValue(dqName.getFone().split("/")[2]);
+          NamePart lastName = new NamePart();
+          lastName.setKnownType(NamePartType.Surname);
+          lastName.setValue(dqName.getFone().split("/")[1]);
+          foneParts.add(lastName);
+        }
+        else {
+          givenName.setValue(dqName.getFone().split("/")[1]);
+        }
         foneParts.add(givenName);
-        NamePart lastName = new NamePart();
-        lastName.setKnownType(NamePartType.Surname);
-        lastName.setValue(dqName.getFone().split("/")[1]);
-        foneParts.add(lastName);
         foneNameForm.setFullText(dqName.getFone().replace("/", ""));
       }
       foneNameForm.setParts(foneParts);
@@ -362,12 +367,17 @@ public class PersonMapper {
       }
       // This checks if there is a last name also. Example: 2 ROMN /Yoshimura/ Takichi
       else if (dqName.getRomn().contains("/")) {
-        givenName.setValue(dqName.getRomn().split("/")[2]);
+        if (dqName.getRomn().split("/").length == 3) {
+          givenName.setValue(dqName.getRomn().split("/")[2]);
+          NamePart lastName = new NamePart();
+          lastName.setKnownType(NamePartType.Surname);
+          lastName.setValue(dqName.getRomn().split("/")[1]);
+          romanParts.add(lastName);
+        } else {
+          givenName.setValue(dqName.getRomn().split("/")[1]);
+        }
+
         romanParts.add(givenName);
-        NamePart lastName = new NamePart();
-        lastName.setKnownType(NamePartType.Surname);
-        lastName.setValue(dqName.getRomn().split("/")[1]);
-        romanParts.add(lastName);
         romanNameForm.setFullText(dqName.getRomn().replace("/", ""));
       }
       romanNameForm.setParts(romanParts);
