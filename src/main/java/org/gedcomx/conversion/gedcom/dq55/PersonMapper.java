@@ -242,8 +242,13 @@ public class PersonMapper {
         ordinance.setCompleteDate(ordFact.getDate());
         ordinance.setType(ordFact.getType());
 
+        if (ordinance.getCompleteDate().getOriginal().length() < 5 || ordinance.getCompleteDate().getOriginal().isEmpty()) {
+          System.out.println("Error: Missing date for " + gedxPerson.getId().toString() +
+                " ordinance: " + ordFact.getType().toString());
+        }
+
         if (ordFact.getQualifiers() == null) {
-          System.out.println("Missing date for gedxPerson: " + gedxPerson.getId().toString() +
+          System.out.println("Error: Missing qualifier (status or temple code) for  " + gedxPerson.getId().toString() +
                   " ordinance: " + ordFact.getType().toString());
         }
         else if (ordFact.getQualifiers().size() == 1) {
