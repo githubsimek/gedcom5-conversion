@@ -242,7 +242,7 @@ public class PersonMapper {
         ordinance.setCompleteDate(ordFact.getDate());
         ordinance.setType(ordFact.getType());
 
-        if (ordinance.getCompleteDate().getOriginal().length() < 5 || ordinance.getCompleteDate().getOriginal().isEmpty()) {
+        if (ordFact.getDate() == null || ordinance.getCompleteDate().getOriginal().length() < 5 || ordinance.getCompleteDate().getOriginal().isEmpty()) {
           System.out.println("Error: Missing date for " + gedxPerson.getId().toString() +
                 " ordinance: " + ordFact.getType().toString());
         }
